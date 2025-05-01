@@ -1,0 +1,98 @@
+ruoyi:
+  name: RuoYi
+  version: 2.3.0
+  copyrightYear: 2019
+  demoEnabled: true
+  profile: D:/ruoyi/uploadPath
+  addressEnabled: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 800
+    min-spare-threads: 30
+
+logging:
+  level:
+    com.ruoyi: debug
+    org.springframework: warn
+
+spring:
+  messages:
+    basename: i18n/messages
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  devtools:
+    restart:
+      enabled: true
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 1
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      master:
+        url: jdbc:mysql://127.0.0.1:3306/mt?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      slave:
+        enabled: false
+        url: ""
+        username: ""
+        password: ""
+
+token:
+  header: Authorization
+  secret: abcdefghijklmnopqrstuvwxyz
+  expireTime: 60
+
+mybatis:
+  typeAliasesPackage: com.ruoyi.project.**.domain
+  mapperLocations: classpath*:mybatis/**/*Mapper.xml
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+swagger:
+  enabled: true
+  pathMapping: /dev-api
+
+xss:
+  enabled: true
+  excludes: /system/notice/*
+  urlPatterns: /system/*,/monitor/*,/tool/*
+
+gen:
+  author: ruoyi
+  packageName: com.ruoyi.project.business
+  autoRemovePre: false
+  tablePrefix: sys_
+
+sys:
+  default:
+    pwd: 123456.
+
+aliyun:
+  oss:
+    endpoint: http://oss-cn-shanghai.aliyuncs.com
+    accessKeyId: xxxxxxxxxx
+    accessKeySecret: xxxxxxxxxx
+    defaultBucketName: xxxxxxxxxx
+    endpointContent: oss-cn-shanghai.aliyuncs.com
