@@ -45,8 +45,8 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
     druid:
       master:
-        url: jdbc:mysql://127.0.0.1:3306/mt?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: root
+        url: jdbc:mysql://127.0.0.1:3306/crowdmarket?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: tms
         password: 123456
       slave:
         enabled: false
@@ -59,29 +59,37 @@ token:
   secret: abcdefghijklmnopqrstuvwxyz
   expireTime: 60
 
+# MyBatis配置
 mybatis:
-  typeAliasesPackage: com.ruoyi.project.**.domain
+  # 搜索指定包别名
+  typeAliasesPackage: com.ruoyi.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
   mapperLocations: classpath*:mybatis/**/*Mapper.xml
+  # 加载全局的配置文件
   configLocation: classpath:mybatis/mybatis-config.xml
 
+
+# PageHelper分页插件
 pagehelper:
   helperDialect: mysql
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
 
+
 swagger:
   enabled: true
   pathMapping: /dev-api
-
+# 防止XSS攻击
 xss:
-  enabled: true
-  excludes: /system/notice/*
-  urlPatterns: /system/*,/monitor/*,/tool/*
+  enabled: true  # 过滤开关
+  excludes: /system/notice/*  # 排除链接（多个用逗号分隔）
+  urlPatterns: /system/*,/monitor/*,/tool/*    # 匹配链接
+
 
 gen:
   author: ruoyi
-  packageName: com.ruoyi.project.business
+  packageName: com.ruoyi.business
   autoRemovePre: false
   tablePrefix: sys_
 

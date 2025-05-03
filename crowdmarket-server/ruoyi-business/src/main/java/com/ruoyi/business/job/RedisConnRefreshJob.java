@@ -1,4 +1,4 @@
-package com.ruoyi.project.business.job;
+package com.ruoyi.business.job;
 
 import com.ruoyi.framework.redis.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;

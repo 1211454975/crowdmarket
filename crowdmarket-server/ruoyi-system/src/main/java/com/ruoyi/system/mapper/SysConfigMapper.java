@@ -24,7 +24,7 @@ public interface SysConfigMapper
      * @param config 参数配置信息
      * @return 参数配置集合
      */
-    public List<SysConfig> selectConfigList(SysConfig config);
+    public List<SysConfig> selectConfigList (SysConfig config);
 
     /**
      * 根据键名查询参数配置信息

@@ -21,6 +21,8 @@ import com.ruoyi.framework.domain.SysCompany;
 import com.ruoyi.system.service.ISysCompanyService;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+
 /**
  * 公司信息Service业务层处理
  * 
@@ -43,6 +45,10 @@ public class SysCompanyServiceImpl implements ISysCompanyService
     @Value("${sys.default.pwd}")
     private String defaultPwd;
 
+    @PostConstruct
+    public void test() {
+        System.out.println("default pwd====>" + defaultPwd);
+    }
     /**
      *  0否1是
      */
