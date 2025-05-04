@@ -103,6 +103,7 @@
       </el-table-column>
       <el-table-column label="是否激活" align="center" prop="activeFlag" :formatter="activeFlagFormat" />
       <el-table-column label="模板" align="center" prop="tempName" />
+      <el-table-column label="数据库状态" align="center" prop="dbStatus" />
       <el-table-column fixed="left" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -119,6 +120,22 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:company:remove']"
           >删除</el-button>-->
+          <el-button  
+            v-if="scope.row.dbStatus === 0"  
+            size="mini"  
+            type="text"  
+            icon="el-icon-s-platform"  
+            @click="handleCreateDatabase(scope.row)"  
+            v-hasPermi="['system:tenant:create']"  
+          >创建数据库</el-button>  
+          <el-button  
+            v-if="scope.row.dbStatus === 1"  
+            size="mini"  
+            type="text"  
+            icon="el-icon-view"  
+            @click="handleViewDatabase(scope.row)"  
+            v-hasPermi="['system:tenant:query']"  
+          >查看数据库</el-button>  
         </template>
       </el-table-column>
     </el-table>
@@ -179,11 +196,37 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+
+    
+    <!-- 查看数据库对话框 -->  
+    <el-dialog title="数据库信息" :visible.sync="dbOpen" width="600px" append-to-body>  
+      <el-descriptions :column="2" border>  
+        <el-descriptions-item label="租户ID">{{ dbInfo.tenantId }}</el-descriptions-item>  
+        <el-descriptions-item label="数据库名称">{{ dbInfo.dbName }}</el-descriptions-item>  
+        <el-descriptions-item label="数据库主机">{{ dbInfo.dbHost }}</el-descriptions-item>  
+        <el-descriptions-item label="数据库端口">{{ dbInfo.dbPort }}</el-descriptions-item>  
+        <el-descriptions-item label="数据库用户名">{{ dbInfo.dbUsername }}</el-descriptions-item>  
+        <el-descriptions-item label="状态">  
+          <el-tag v-if="dbInfo.status === 1" type="success">启用</el-tag>  
+          <el-tag v-else type="danger">停用</el-tag>  
+        </el-descriptions-item>  
+        <el-descriptions-item label="创建时间">{{ parseTime(dbInfo.createTime) }}</el-descriptions-item>  
+        <el-descriptions-item label="更新时间">{{ parseTime(dbInfo.updateTime) }}</el-descriptions-item>  
+      </el-descriptions>  
+      <div slot="footer" class="dialog-footer">  
+        <el-button type="primary" @click="testDbConnection">测试连接</el-button>  
+        <el-button @click="dbOpen = false">关 闭</el-button>  
+      </div>  
+    </el-dialog>  
   </div>
 </template>
 
 <script>
 import { listCompany, getCompany, delCompany, addCompany, updateCompany, exportCompany, listAllTemps } from "@/api/system/company";
+import { createTenantDatabase, getTenantDatabase, testConnection } from "@/api/system/tenantDatabase";  
+  
+
 import RegionSelect from "../../components/RegionSelect";
 
 export default {
@@ -207,10 +250,16 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 是否显示数据库弹出层
+      dbOpen: true,
+      // 数据库信息
+      dbInfo: {},
+      
       //所有权限模板
       templateList:[],
       // 是否激活字典
       activeFlagOptions: [],
+      dbStatusOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -219,7 +268,8 @@ export default {
         comCode: undefined,
         activeTime: undefined,
         activeFlag: undefined,
-        tempName: undefined
+        tempName: undefined,
+        dbStatus: undefined
       },
       // 表单参数
       form: {
@@ -256,6 +306,9 @@ export default {
     this.getDicts("sys_flag").then(response => {
       this.activeFlagOptions = response.data;
     });
+    this.getDicts("sys_tenant_dbstatus").then(response => {
+      this.dbStatusOptions = response.data;
+    })
   },
   methods: {
     /** 查询公司信息列表 */
@@ -394,7 +447,34 @@ export default {
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});
-    }
+    },
+
+    /** 创建数据库按钮操作 */
+    handleCreateDatabase(row) {  
+      this.$modal.confirm('确认为"' + row.companyName + '"创建独立数据库吗?').then(() => {  
+        this.loading = true;  
+        return createTenantDatabase(row.id);  
+      }).then(() => {  
+        this.loading = false;  
+        this.getList();  
+        this.$modal.msgSuccess("数据库创建成功");  
+      }).catch(() => {  
+        this.loading = false;  
+      });  
+    },  
+    /** 查看数据库按钮操作 */  
+    handleViewDatabase(row) {  
+      getTenantDatabase(row.id).then(response => {  
+        this.dbInfo = response.data;  
+        this.dbOpen = true;  
+      });  
+    },  
+    /** 测试数据库连接 */  
+    testDbConnection() {  
+      testConnection(this.dbInfo).then(response => {  
+        this.$modal.msgSuccess("数据库连接成功");  
+      }).catch(() => {});  
+    }  
   }
 };
 </script>

@@ -2,6 +2,7 @@ package com.ruoyi.framework.config;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -9,6 +10,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.sql.DataSource;
+
+import com.ruoyi.framework.domain.TenantDatabase;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -24,11 +28,14 @@ import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
 import com.ruoyi.framework.config.properties.DruidProperties;
 import com.ruoyi.framework.datasource.DynamicDataSource;
 
+import com.ruoyi.framework.service.ITenantDatabaseService;
+
 /**
  * druid 配置多数据源
  * 
  * @author ruoyi
  */
+@Slf4j
 @Configuration
 public class DruidConfig
 {
@@ -56,9 +63,74 @@ public class DruidConfig
         Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
+
+        // 租户数据源扩展
+        // Initialize with tenant data sources that are already configured
+        initTenantDataSources(targetDataSources);
+
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
-    
+
+
+    /**
+     * 租户数据源扩展
+     * Initialize tenant data sources from the database
+     */
+    private void initTenantDataSources(Map<Object, Object> targetDataSources) {
+        try {
+            // Get tenant database service using SpringUtils to avoid circular dependency
+            ITenantDatabaseService tenantDatabaseService = SpringUtils.getBean(ITenantDatabaseService.class);
+            if (tenantDatabaseService != null) {
+                // Get all active tenant databases
+                TenantDatabase query = new TenantDatabase();
+                query.setStatus(1); // Only active databases
+                List<TenantDatabase> tenantDatabases = tenantDatabaseService.selectTenantDatabaseList(query);
+
+                // Add each tenant database to the target data sources
+                for (TenantDatabase tenantDb : tenantDatabases) {
+                    try {
+                        DataSource tenantDataSource = createTenantDataSource(tenantDb);
+                        targetDataSources.put(tenantDb.getTenantId(), tenantDataSource);
+                    } catch (Exception e) {
+                        log.error("Failed to initialize tenant data source for tenant: " + tenantDb.getTenantId(), e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to initialize tenant data sources", e);
+        }
+    }
+
+    /**
+     * Create a data source for a tenant
+     */
+    private DataSource createTenantDataSource(TenantDatabase tenantDb) {
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setUrl("jdbc:mysql://" + tenantDb.getDbHost() + ":" + tenantDb.getDbPort() + "/" + tenantDb.getDbName());
+        dataSource.setUsername(tenantDb.getDbUsername());
+        dataSource.setPassword(decryptPassword(tenantDb.getDbPassword()));
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+
+        // Apply the same Druid properties as the master data source
+        DruidProperties druidProperties = SpringUtils.getBean(DruidProperties.class);
+        return druidProperties.dataSource(dataSource);
+    }
+
+
+    /**
+     * Decrypt the password
+     */
+    private String decryptPassword(String encryptedPassword) {
+        try {
+            // Implement password decryption logic
+            return encryptedPassword; // Placeholder
+        } catch (Exception e) {
+            log.error("Failed to decrypt password", e);
+            return encryptedPassword;
+        }
+    }
+
+
     /**
      * 设置数据源
      * 

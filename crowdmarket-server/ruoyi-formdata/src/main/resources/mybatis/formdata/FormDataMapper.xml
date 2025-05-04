@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.formdata.mapper.FormDataMapper">
+
+    <select id="selectFormDataById" resultType="java.util.Map">
+        select * from ${tableName} where ${pkColumn} = #{pkValue}
+    </select>
+
+    <select id="selectFormDataList" resultType="java.util.Map">
+        select * from ${tableName}
+        <where>
+            <if test="params != null">
+                <foreach collection="params.entrySet()" item="value" index="key">
+                    <if test="key.endsWith('_like') and value != null and value != ''">
+                        AND ${key.substring(0, key.indexOf('_like'))} like concat('%', #{value}, '%')
+                    </if>
+                    <if test="key.endsWith('_ne') and value != null">
+                        AND ${key.substring(0, key.indexOf('_ne'))} != #{value}
+                    </if>
+                    <if test="key.endsWith('_gt') and value != null">
+                        AND ${key.substring(0, key.indexOf('_gt'))} &gt; #{value}
+                    </if>
+                    <if test="key.endsWith('_lt') and value != null">
+                        AND ${key.substring(0, key.indexOf('_lt'))} &lt; #{value}
+                    </if>
+                    <if test="key.startsWith('begin_') and value != null">
+                        AND ${key.substring(key.indexOf('_') + 1)} &gt;= #{value}
+                    </if>
+                    <if test="key.startsWith('end_') and value != null">
+                        AND ${key.substring(key.indexOf('_') + 1)} &lt;= #{value}
+                    </if>
+                    <if test="!key.contains('_') and !key.startsWith('begin_') and !key.startsWith('end_') and value != null">
+                        AND ${key} = #{value}
+                    </if>
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertFormData">
+        insert into ${tableName}
+        <foreach collection="data.entrySet()" item="value" index="key" open="(" close=")" separator=",">
+            ${key}
+        </foreach>
+        values
+        <foreach collection="data.entrySet()" item="value" index="key" open="(" close=")" separator=",">
+            #{value}
+        </foreach>
+    </insert>
+
+    <update id="updateFormData">
+        update ${tableName}
+        <set>
+            <foreach collection="data.entrySet()" item="value" index="key" separator=",">
+                <if test="key != pkColumn">
+                    ${key} = #{value}
+                </if>
+            </foreach>
+        </set>
+        where ${pkColumn} = #{pkValue}
+    </update>
+
+    <delete id="deleteFormDataById">
+        delete from ${tableName} where ${pkColumn} = #{pkValue}
+    </delete>
+
+    <delete id="deleteFormDataByIds">
+        delete from ${tableName} where ${pkColumn} in
+        <foreach collection="pkValues" item="pkValue" open="(" separator="," close=")">
+            #{pkValue}
+        </foreach>
+    </delete>
+
+    <update id="executeSql">
+        ${sql}
+    </update>
+</mapper>

@@ -66,4 +66,5 @@ public class  SysCompany extends BaseEntity
      */
     private String regionCodes;
 
+    private int dbStatus = 0;
 }
