@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ruoyi.metadata.mapper.FormViewConfigMapper">  
+      
+    <resultMap type="FormViewConfig" id="FormViewConfigResult">  
+        <id     property="viewId"       column="view_id"      />  
+        <result property="metadataId"    column="metadata_id"    />  
+        <result property="viewName"      column="view_name"     />  
+        <result property="viewType"      column="view_type"     />  
+        <result property="viewConfig"    column="view_config"    />  
+        <result property="isDefault"     column="is_default"    />  
+        <result property="tenantId"      column="tenant_id"     />  
+        <result property="createBy"      column="create_by"     />  
+        <result property="createTime"    column="create_time"   />  
+        <result property="updateBy"      column="update_by"     />  
+        <result property="updateTime"    column="update_time"   />  
+    </resultMap>  
+      
+    <sql id="selectFormViewConfigVo">  
+        select view_id, metadata_id, view_name, view_type, view_config, is_default, tenant_id,   
+               create_by, create_time, update_by, update_time  
+        from form_view_config  
+    </sql>  
+      
+    <select id="selectFormViewConfigList" parameterType="FormViewConfig" resultMap="FormViewConfigResult">  
+        <include refid="selectFormViewConfigVo"/>  
+        <where>  
+            <if test="metadataId != null and metadataId != ''">  
+                AND metadata_id = #{metadataId}  
+            </if>  
+            <if test="viewName != null and viewName != ''">  
+                AND view_name like concat('%', #{viewName}, '%')  
+            </if>  
+            <if test="viewType != null and viewType != ''">  
+                AND view_type = #{viewType}  
+            </if>  
+            <if test="isDefault != null">  
+                AND is_default = #{isDefault}  
+            </if>  
+            <if test="tenantId != null and tenantId != ''">  
+                AND tenant_id = #{tenantId}  
+            </if>  
+        </where>  
+    </select>  
+      
+    <select id="selectFormViewConfigById" parameterType="String" resultMap="FormViewConfigResult">  
+        <include refid="selectFormViewConfigVo"/>  
+        where view_id = #{viewId}  
+    </select>  
+      
+    <select id="selectFormViewConfigByMetadataId" parameterType="String" resultMap="FormViewConfigResult">  
+        <include refid="selectFormViewConfigVo"/>  
+        where metadata_id = #{metadataId}  
+    </select>  
+      
+    <select id="selectDefaultFormViewConfig" parameterType="FormViewConfig" resultMap="FormViewConfigResult">  
+        <include refid="selectFormViewConfigVo"/>  
+        where metadata_id = #{metadataId} and view_type = #{viewType} and is_default = 1  
+        and tenant_id = #{tenantId}  
+        limit 1  
+    </select>  
+      
+    <insert id="insertFormViewConfig" parameterType="FormViewConfig">  
+        insert into form_view_config  
+        <trim prefix="(" suffix=")" suffixOverrides=",">  
+            <if test="viewId != null">view_id,</if>  
+            <if test="metadataId != null">metadata_id,</if>  
+            <if test="viewName != null">view_name,</if>  
+            <if test="viewType != null">view_type,</if>  
+            <if test="viewConfig != null">view_config,</if>  
+            <if test="isDefault != null">is_default,</if>  
+            <if test="tenantId != null">tenant_id,</if>  
+            <if test="createBy != null">create_by,</if>  
+            <if test="createTime != null">create_time,</if>  
+            <if test="updateBy != null">update_by,</if>  
+            <if test="updateTime != null">update_time,</if>  
+        </trim>  
+        <trim prefix="values (" suffix=")" suffixOverrides=",">  
+            <if test="viewId != null">#{viewId},</if>  
+            <if test="metadataId != null">#{metadataId},</if>  
+            <if test="viewName != null">#{viewName},</if>  
+            <if test="viewType != null">#{viewType},</if>  
+            <if test="viewConfig != null">#{viewConfig},</if>  
+            <if test="isDefault != null">#{isDefault},</if>  
+            <if test="tenantId != null">#{tenantId},</if>  
+            <if test="createBy != null">#{createBy},</if>  
+            <if test="createTime != null">#{createTime},</if>  
+            <if test="updateBy != null">#{updateBy},</if>  
+            <if test="updateTime != null">#{updateTime},</if>  
+        </trim>  
+    </insert>  
+      
+    <update id="updateFormViewConfig" parameterType="FormViewConfig">  
+        update form_view_config  
+        <trim prefix="SET" suffixOverrides=",">  
+            <if test="metadataId != null">metadata_id = #{metadataId},</if>  
+            <if test="viewName != null">view_name = #{viewName},</if>  
+            <if test="viewType != null">view_type = #{viewType},</if>  
+            <if test="viewConfig != null">view_config = #{viewConfig},</if>  
+            <if test="isDefault != null">is_default = #{isDefault},</if>  
+            <if test="updateBy != null">update_by = #{updateBy},</if>  
+            <if test="updateTime != null">update_time = #{updateTime},</if>  
+        </trim>  
+        where view_id = #{viewId} and tenant_id = #{tenantId}  
+    </update>  
+      
+    <update id="clearDefaultFlag" parameterType="FormViewConfig">  
+        update form_view_config set is_default = 0  
+        where metadata_id = #{metadataId} and view_type = #{viewType} and tenant_id = #{tenantId}  
+        and view_id != #{viewId}  
+    </update>  
+      
+    <delete id="deleteFormViewConfigById" parameterType="String">  
+        delete from form_view_config where view_id = #{viewId}  
+    </delete>  
+      
+    <delete id="deleteFormViewConfigByIds" parameterType="String">  
+        delete from form_view_config where view_id in   
+        <foreach item="viewId" collection="array" open="(" separator="," close=")">  
+            #{viewId}  
+        </foreach>  
+    </delete>  
+      
+    <delete id="deleteFormViewConfigByMetadataId" parameterType="String">  
+        delete from form_view_config where metadata_id = #{metadataId}  
+    </delete>  
+      
+    <select id="countFormViewConfigByMetadataId" parameterType="String" resultType="Integer">  
+        select count(1) from form_view_config where metadata_id = #{metadataId}  
+    </select>  
+</mapper>

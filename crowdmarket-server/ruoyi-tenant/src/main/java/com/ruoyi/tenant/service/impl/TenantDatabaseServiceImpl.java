@@ -21,7 +21,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import com.ruoyi.framework.domain.TenantDatabase;
 import com.ruoyi.tenant.mapper.TenantDatabaseMapper;
-import com.ruoyi.framework.service.ITenantDatabaseService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;

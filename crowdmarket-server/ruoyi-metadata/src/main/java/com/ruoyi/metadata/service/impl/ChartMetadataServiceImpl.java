@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.ruoyi.metadata.service.ChartDataProvider;
+import com.ruoyi.metadata.service.IChartDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +23,8 @@ import com.ruoyi.metadata.domain.ChartMetadata;
 import com.ruoyi.metadata.domain.FormFieldMetadata;
 import com.ruoyi.metadata.mapper.ChartConfigMapper;
 import com.ruoyi.metadata.mapper.ChartMetadataMapper;
-import com.ruoyi.metadata.service.ChartMetadataService;
-import com.ruoyi.metadata.service.FormFieldMetadataService;
+import com.ruoyi.metadata.service.IChartMetadataService;
+import com.ruoyi.metadata.service.IFormFieldMetadataService;
 
 /**
  * 图表元数据Service业务层处理
@@ -32,7 +32,7 @@ import com.ruoyi.metadata.service.FormFieldMetadataService;
  * @author ruoyi
  */
 @Service
-public class ChartMetadataServiceImpl implements ChartMetadataService {
+public class ChartMetadataServiceImpl implements IChartMetadataService {
     @Autowired
     private ChartMetadataMapper chartMetadataMapper;
 
@@ -40,13 +40,13 @@ public class ChartMetadataServiceImpl implements ChartMetadataService {
     private ChartConfigMapper chartConfigMapper;
 
     @Autowired
-    private FormFieldMetadataService formFieldMetadataService;
+    private IFormFieldMetadataService IFormFieldMetadataService;
 
 //    @Autowired
 //    private FormDataService formDataService;
 
     @Autowired
-    private ChartDataProvider chartDataProvider;
+    private IChartDataProvider chartDataProvider;
     /**
      * 查询图表元数据
      *
@@ -208,7 +208,7 @@ public class ChartMetadataServiceImpl implements ChartMetadataService {
         ChartConfig chartConfig = chartConfigMapper.selectChartConfigByChartId(chartId);
 
         // 获取表单字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(chartMetadata.getMetadataId());
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(chartMetadata.getMetadataId());
 
         result.put("chart", chartMetadata);
         result.put("config", chartConfig);
@@ -269,7 +269,7 @@ public class ChartMetadataServiceImpl implements ChartMetadataService {
         }
 
         // 获取表单字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(chartMetadata.getMetadataId());
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(chartMetadata.getMetadataId());
         Map<String, FormFieldMetadata> fieldMap = new HashMap<>();
         for (FormFieldMetadata field : fieldList) {
             fieldMap.put(field.getFieldId(), field);

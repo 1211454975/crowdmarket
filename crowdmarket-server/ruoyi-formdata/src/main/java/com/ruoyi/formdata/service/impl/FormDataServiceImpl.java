@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.ruoyi.metadata.service.FormTenantTableMappingService;
+import com.ruoyi.framework.datasource.DynamicDataSourceContextHolder;
+import com.ruoyi.metadata.service.IFormTenantTableMappingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,13 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.formdata.config.DataSourceType;
-import com.ruoyi.formdata.config.DynamicDataSourceContextHolder;
 import com.ruoyi.formdata.mapper.FormDataMapper;
-import com.ruoyi.formdata.service.FormDataService;
+import com.ruoyi.formdata.service.IFormDataService;
 import com.ruoyi.metadata.domain.FormFieldMetadata;
 import com.ruoyi.metadata.domain.FormMetadata;
 import com.ruoyi.metadata.domain.FormTenantTableMapping;
-import com.ruoyi.metadata.service.FormFieldMetadataService;
-import com.ruoyi.metadata.service.FormMetadataService;
+import com.ruoyi.metadata.service.IFormFieldMetadataService;
+import com.ruoyi.metadata.service.IFormMetadataService;
 
 /**
  * 表单数据Service业务层处理
@@ -33,20 +33,20 @@ import com.ruoyi.metadata.service.FormMetadataService;
  * @author ruoyi
  */
 @Service
-public class FormDataServiceImpl implements FormDataService {
+public class FormDataServiceImpl implements IFormDataService {
     private static final Logger log = LoggerFactory.getLogger(FormDataServiceImpl.class);
 
     @Autowired
     private FormDataMapper formDataMapper;
 
     @Autowired
-    private FormMetadataService formMetadataService;
+    private IFormMetadataService IFormMetadataService;
 
     @Autowired
-    private FormFieldMetadataService formFieldMetadataService;
+    private IFormFieldMetadataService IFormFieldMetadataService;
 
     @Autowired
-    private FormTenantTableMappingService formTenantTableMappingService;
+    private IFormTenantTableMappingService IFormTenantTableMappingService;
 
     /**
      * 查询表单数据
@@ -58,20 +58,20 @@ public class FormDataServiceImpl implements FormDataService {
     @Override
     public Map<String, Object> selectFormDataById(String metadataId, String dataId) {
         // 获取表单元数据
-        FormMetadata metadata = formMetadataService.selectFormMetadataByMetadataId(metadataId);
+        FormMetadata metadata = IFormMetadataService.selectFormMetadataByMetadataId(metadataId);
         if (metadata == null) {
             return null;
         }
 
         // 获取租户表映射
         String tenantId = SecurityUtils.getCurrComId();
-        FormTenantTableMapping mapping = formTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
+        FormTenantTableMapping mapping = IFormTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
         if (mapping == null || mapping.getIsCreated() != 1) {
             return null;
         }
 
         // 获取主键字段
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         String pkColumn = getPrimaryKeyColumn(fieldList);
         if (StringUtils.isEmpty(pkColumn)) {
             return null;
@@ -99,20 +99,20 @@ public class FormDataServiceImpl implements FormDataService {
     @Override
     public List<Map<String, Object>> selectFormDataList(String metadataId, Map<String, Object> params) {
         // 获取表单元数据
-        FormMetadata metadata = formMetadataService.selectFormMetadataByMetadataId(metadataId);
+        FormMetadata metadata = IFormMetadataService.selectFormMetadataByMetadataId(metadataId);
         if (metadata == null) {
             return new ArrayList<>();
         }
 
         // 获取租户表映射
         String tenantId = SecurityUtils.getCurrComId();
-        FormTenantTableMapping mapping = formTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
+        FormTenantTableMapping mapping = IFormTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
         if (mapping == null || mapping.getIsCreated() != 1) {
             return new ArrayList<>();
         }
 
         // 获取字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         if (fieldList.isEmpty()) {
             return new ArrayList<>();
         }
@@ -143,14 +143,14 @@ public class FormDataServiceImpl implements FormDataService {
     @Transactional
     public int insertFormData(String metadataId, Map<String, Object> data) {
         // 获取表单元数据
-        FormMetadata metadata = formMetadataService.selectFormMetadataByMetadataId(metadataId);
+        FormMetadata metadata = IFormMetadataService.selectFormMetadataByMetadataId(metadataId);
         if (metadata == null) {
             return 0;
         }
 
         // 获取租户表映射
         String tenantId = SecurityUtils.getCurrComId();
-        FormTenantTableMapping mapping = formTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
+        FormTenantTableMapping mapping = IFormTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
         if (mapping == null) {
             // 创建租户表映射
             mapping = new FormTenantTableMapping();
@@ -160,11 +160,11 @@ public class FormDataServiceImpl implements FormDataService {
             mapping.setTableName("form_data_" + metadataId.replace("-", ""));
             mapping.setIsCreated(0);
             mapping.setCreateTime(new Date());
-            formTenantTableMappingService.insertFormTenantTableMapping(mapping);
+            IFormTenantTableMappingService.insertFormTenantTableMapping(mapping);
         }
 
         // 获取字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         if (fieldList.isEmpty()) {
             return 0;
         }
@@ -179,7 +179,7 @@ public class FormDataServiceImpl implements FormDataService {
                 if (created) {
                     mapping.setIsCreated(1);
                     mapping.setUpdateTime(new Date());
-                    formTenantTableMappingService.updateFormTenantTableMapping(mapping);
+                    IFormTenantTableMappingService.updateFormTenantTableMapping(mapping);
                 } else {
                     return 0;
                 }
@@ -211,20 +211,20 @@ public class FormDataServiceImpl implements FormDataService {
     @Transactional
     public int updateFormData(String metadataId, Map<String, Object> data) {
         // 获取表单元数据
-        FormMetadata metadata = formMetadataService.selectFormMetadataByMetadataId(metadataId);
+        FormMetadata metadata = IFormMetadataService.selectFormMetadataByMetadataId(metadataId);
         if (metadata == null) {
             return 0;
         }
 
         // 获取租户表映射
         String tenantId = SecurityUtils.getCurrComId();
-        FormTenantTableMapping mapping = formTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
+        FormTenantTableMapping mapping = IFormTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
         if (mapping == null || mapping.getIsCreated() != 1) {
             return 0;
         }
 
         // 获取字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         if (fieldList.isEmpty()) {
             return 0;
         }
@@ -271,20 +271,20 @@ public class FormDataServiceImpl implements FormDataService {
     @Transactional
     public int deleteFormDataById(String metadataId, String dataId) {
         // 获取表单元数据
-        FormMetadata metadata = formMetadataService.selectFormMetadataByMetadataId(metadataId);
+        FormMetadata metadata = IFormMetadataService.selectFormMetadataByMetadataId(metadataId);
         if (metadata == null) {
             return 0;
         }
 
         // 获取租户表映射
         String tenantId = SecurityUtils.getCurrComId();
-        FormTenantTableMapping mapping = formTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
+        FormTenantTableMapping mapping = IFormTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
         if (mapping == null || mapping.getIsCreated() != 1) {
             return 0;
         }
 
         // 获取字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         String pkColumn = getPrimaryKeyColumn(fieldList);
         if (StringUtils.isEmpty(pkColumn)) {
             return 0;
@@ -313,20 +313,20 @@ public class FormDataServiceImpl implements FormDataService {
     @Transactional
     public int deleteFormDataByIds(String metadataId, String[] dataIds) {
         // 获取表单元数据
-        FormMetadata metadata = formMetadataService.selectFormMetadataByMetadataId(metadataId);
+        FormMetadata metadata = IFormMetadataService.selectFormMetadataByMetadataId(metadataId);
         if (metadata == null) {
             return 0;
         }
 
         // 获取租户表映射
         String tenantId = SecurityUtils.getCurrComId();
-        FormTenantTableMapping mapping = formTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
+        FormTenantTableMapping mapping = IFormTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
         if (mapping == null || mapping.getIsCreated() != 1) {
             return 0;
         }
 
         // 获取字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         String pkColumn = getPrimaryKeyColumn(fieldList);
         if (StringUtils.isEmpty(pkColumn)) {
             return 0;
@@ -360,14 +360,14 @@ public class FormDataServiceImpl implements FormDataService {
         }
 
         // 获取表单元数据
-        FormMetadata metadata = formMetadataService.selectFormMetadataByMetadataId(metadataId);
+        FormMetadata metadata = IFormMetadataService.selectFormMetadataByMetadataId(metadataId);
         if (metadata == null) {
             return "表单元数据不存在";
         }
 
         // 获取租户表映射
         String tenantId = SecurityUtils.getCurrComId();
-        FormTenantTableMapping mapping = formTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
+        FormTenantTableMapping mapping = IFormTenantTableMappingService.selectFormTenantTableMappingByMetadataIdAndTenantId(metadataId, tenantId);
         if (mapping == null) {
             // 创建租户表映射
             mapping = new FormTenantTableMapping();
@@ -377,11 +377,11 @@ public class FormDataServiceImpl implements FormDataService {
             mapping.setTableName("form_data_" + metadataId.replace("-", ""));
             mapping.setIsCreated(0);
             mapping.setCreateTime(new Date());
-            formTenantTableMappingService.insertFormTenantTableMapping(mapping);
+            IFormTenantTableMappingService.insertFormTenantTableMapping(mapping);
         }
 
         // 获取字段列表
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         if (fieldList.isEmpty()) {
             return "表单字段不存在";
         }
@@ -402,7 +402,7 @@ public class FormDataServiceImpl implements FormDataService {
                 if (created) {
                     mapping.setIsCreated(1);
                     mapping.setUpdateTime(new Date());
-                    formTenantTableMappingService.updateFormTenantTableMapping(mapping);
+                    IFormTenantTableMappingService.updateFormTenantTableMapping(mapping);
                 } else {
                     return "创建表失败";
                 }

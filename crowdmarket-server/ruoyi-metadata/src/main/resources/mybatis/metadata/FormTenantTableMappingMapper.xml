@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ruoyi.metadata.mapper.FormTenantTableMappingMapper">  
+      
+    <resultMap type="FormTenantTableMapping" id="FormTenantTableMappingResult">  
+        <id     property="mappingId"      column="mapping_id"      />  
+        <result property="metadataId"     column="metadata_id"     />  
+        <result property="tenantId"       column="tenant_id"       />  
+        <result property="tableName"      column="table_name"      />  
+        <result property="isCreated"      column="is_created"      />  
+        <result property="createTime"     column="create_time"     />  
+        <result property="updateTime"     column="update_time"     />  
+    </resultMap>  
+      
+    <sql id="selectFormTenantTableMappingVo">  
+        select mapping_id, metadata_id, tenant_id, table_name, is_created, create_time, update_time  
+        from form_tenant_table_mapping  
+    </sql>  
+      
+    <select id="selectFormTenantTableMappingList" parameterType="FormTenantTableMapping" resultMap="FormTenantTableMappingResult">  
+        <include refid="selectFormTenantTableMappingVo"/>  
+        <where>  
+            <if test="metadataId != null and metadataId != ''">  
+                AND metadata_id = #{metadataId}  
+            </if>  
+            <if test="tenantId != null and tenantId != ''">  
+                AND tenant_id = #{tenantId}  
+            </if>  
+            <if test="tableName != null and tableName != ''">  
+                AND table_name like concat('%', #{tableName}, '%')  
+            </if>  
+            <if test="isCreated != null">  
+                AND is_created = #{isCreated}  
+            </if>  
+        </where>  
+    </select>  
+      
+    <select id="selectFormTenantTableMappingById" parameterType="String" resultMap="FormTenantTableMappingResult">  
+        <include refid="selectFormTenantTableMappingVo"/>  
+        where mapping_id = #{mappingId}  
+    </select>  
+      
+    <select id="selectFormTenantTableMappingByMetadataIdAndTenantId" resultMap="FormTenantTableMappingResult">  
+        <include refid="selectFormTenantTableMappingVo"/>  
+        where metadata_id = #{metadataId} and tenant_id = #{tenantId}  
+        limit 1  
+    </select>  
+      
+    <select id="selectFormTenantTableMappingByMetadataId" parameterType="String" resultMap="FormTenantTableMappingResult">  
+        <include refid="selectFormTenantTableMappingVo"/>  
+        where metadata_id = #{metadataId}  
+    </select>  
+      
+    <insert id="insertFormTenantTableMapping" parameterType="FormTenantTableMapping">  
+        insert into form_tenant_table_mapping  
+        <trim prefix="(" suffix=")" suffixOverrides=",">  
+            <if test="mappingId != null">mapping_id,</if>  
+            <if test="metadataId != null">metadata_id,</if>  
+            <if test="tenantId != null">tenant_id,</if>  
+            <if test="tableName != null">table_name,</if>  
+            <if test="isCreated != null">is_created,</if>  
+            <if test="createTime != null">create_time,</if>  
+            <if test="updateTime != null">update_time,</if>  
+        </trim>  
+        <trim prefix="values (" suffix=")" suffixOverrides=",">  
+            <if test="mappingId != null">#{mappingId},</if>  
+            <if test="metadataId != null">#{metadataId},</if>  
+            <if test="tenantId != null">#{tenantId},</if>  
+            <if test="tableName != null">#{tableName},</if>  
+            <if test="isCreated != null">#{isCreated},</if>  
+            <if test="createTime != null">#{createTime},</if>  
+            <if test="updateTime != null">#{updateTime},</if>  
+        </trim>  
+    </insert>  
+      
+    <update id="updateFormTenantTableMapping" parameterType="FormTenantTableMapping">  
+        update form_tenant_table_mapping  
+        <trim prefix="SET" suffixOverrides=",">  
+            <if test="metadataId != null">metadata_id = #{metadataId},</if>  
+            <if test="tenantId != null">tenant_id = #{tenantId},</if>  
+            <if test="tableName != null">table_name = #{tableName},</if>  
+            <if test="isCreated != null">is_created = #{isCreated},</if>  
+            <if test="updateTime != null">update_time = #{updateTime},</if>  
+        </trim>  
+        where mapping_id = #{mappingId}  
+    </update>  
+      
+    <update id="updateTableCreatedStatus">  
+        update form_tenant_table_mapping set is_created = #{isCreated}, update_time = sysdate()  
+        where metadata_id = #{metadataId} and tenant_id = #{tenantId}  
+    </update>  
+      
+    <delete id="deleteFormTenantTableMappingById" parameterType="String">  
+        delete from form_tenant_table_mapping where mapping_id = #{mappingId}  
+    </delete>  
+      
+    <delete id="deleteFormTenantTableMappingByIds" parameterType="String">  
+        delete from form_tenant_table_mapping where mapping_id in   
+        <foreach item="mappingId" collection="array" open="(" separator="," close=")">  
+            #{mappingId}  
+        </foreach>  
+    </delete>  
+      
+    <delete id="deleteFormTenantTableMappingByMetadataId" parameterType="String">  
+        delete from form_tenant_table_mapping where metadata_id = #{metadataId}  
+    </delete>  
+      
+    <select id="countFormTenantTableMappingByMetadataId" parameterType="String" resultType="Integer">  
+        select count(1) from form_tenant_table_mapping where metadata_id = #{metadataId}  
+    </select>  
+</mapper>

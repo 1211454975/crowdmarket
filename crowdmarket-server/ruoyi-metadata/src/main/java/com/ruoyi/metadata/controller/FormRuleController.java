@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.metadata.domain.FormRule;
 import com.ruoyi.metadata.domain.FormRuleAction;
 import com.ruoyi.metadata.domain.FormRuleCondition;
-import com.ruoyi.metadata.service.FormRuleService;
+import com.ruoyi.metadata.service.IFormRuleService;
 
 /**
  * 表单规则Controller
@@ -33,7 +33,7 @@ import com.ruoyi.metadata.service.FormRuleService;
 @RequestMapping("/metadata/rule")
 public class FormRuleController extends BaseController {
     @Autowired
-    private FormRuleService formRuleService;
+    private IFormRuleService IFormRuleService;
 
     /**
      * 查询表单规则列表
@@ -42,7 +42,7 @@ public class FormRuleController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(FormRule formRule) {
         startPage();
-        List<FormRule> list = formRuleService.selectFormRuleList(formRule);
+        List<FormRule> list = IFormRuleService.selectFormRuleList(formRule);
         return getDataTable(list);
     }
 
@@ -52,7 +52,7 @@ public class FormRuleController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:rule:list')")
     @GetMapping("/listByMetadataId/{metadataId}")
     public AjaxResult listByMetadataId(@PathVariable("metadataId") String metadataId) {
-        List<FormRule> list = formRuleService.selectFormRuleByMetadataId(metadataId);
+        List<FormRule> list = IFormRuleService.selectFormRuleByMetadataId(metadataId);
         return AjaxResult.success(list);
     }
 
@@ -62,7 +62,7 @@ public class FormRuleController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:rule:query')")
     @GetMapping(value = "/{ruleId}")
     public AjaxResult getInfo(@PathVariable("ruleId") String ruleId) {
-        return AjaxResult.success(formRuleService.selectFormRuleByRuleId(ruleId));
+        return AjaxResult.success(IFormRuleService.selectFormRuleByRuleId(ruleId));
     }
 
     /**
@@ -71,7 +71,7 @@ public class FormRuleController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:rule:query')")
     @GetMapping(value = "/detail/{ruleId}")
     public AjaxResult getDetail(@PathVariable("ruleId") String ruleId) {
-        return AjaxResult.success(formRuleService.getFormRuleDetail(ruleId));
+        return AjaxResult.success(IFormRuleService.getFormRuleDetail(ruleId));
     }
 
     /**
@@ -81,7 +81,7 @@ public class FormRuleController extends BaseController {
     @Log(title = "表单规则", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody FormRule formRule) {
-        return toAjax(formRuleService.insertFormRule(formRule));
+        return toAjax(IFormRuleService.insertFormRule(formRule));
     }
 
     /**
@@ -91,7 +91,7 @@ public class FormRuleController extends BaseController {
     @Log(title = "表单规则", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody FormRule formRule) {
-        return toAjax(formRuleService.updateFormRule(formRule));
+        return toAjax(IFormRuleService.updateFormRule(formRule));
     }
 
     /**
@@ -101,7 +101,7 @@ public class FormRuleController extends BaseController {
     @Log(title = "表单规则", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ruleIds}")
     public AjaxResult remove(@PathVariable String[] ruleIds) {
-        return toAjax(formRuleService.deleteFormRuleByRuleIds(ruleIds));
+        return toAjax(IFormRuleService.deleteFormRuleByRuleIds(ruleIds));
     }
 
     /**
@@ -111,7 +111,7 @@ public class FormRuleController extends BaseController {
     @Log(title = "表单规则", businessType = BusinessType.UPDATE)
     @PutMapping("/enable/{ruleId}")
     public AjaxResult enable(@PathVariable("ruleId") String ruleId) {
-        return toAjax(formRuleService.enableFormRule(ruleId));
+        return toAjax(IFormRuleService.enableFormRule(ruleId));
     }
 
     /**
@@ -121,7 +121,7 @@ public class FormRuleController extends BaseController {
     @Log(title = "表单规则", businessType = BusinessType.UPDATE)
     @PutMapping("/disable/{ruleId}")
     public AjaxResult disable(@PathVariable("ruleId") String ruleId) {
-        return toAjax(formRuleService.disableFormRule(ruleId));
+        return toAjax(IFormRuleService.disableFormRule(ruleId));
     }
 
     /**
@@ -137,7 +137,7 @@ public class FormRuleController extends BaseController {
         @SuppressWarnings("unchecked")
         List<FormRuleAction> actions = (List<FormRuleAction>) detail.get("actions");
 
-        return toAjax(formRuleService.saveFormRuleDetail(ruleId, conditions, actions));
+        return toAjax(IFormRuleService.saveFormRuleDetail(ruleId, conditions, actions));
     }
 
     /**
@@ -148,6 +148,6 @@ public class FormRuleController extends BaseController {
     public AjaxResult execute(@PathVariable("metadataId") String metadataId,
                               @PathVariable("triggerPoint") String triggerPoint,
                               @RequestBody Map<String, Object> formData) {
-        return AjaxResult.success(formRuleService.executeRules(metadataId, formData, triggerPoint));
+        return AjaxResult.success(IFormRuleService.executeRules(metadataId, formData, triggerPoint));
     }
 }

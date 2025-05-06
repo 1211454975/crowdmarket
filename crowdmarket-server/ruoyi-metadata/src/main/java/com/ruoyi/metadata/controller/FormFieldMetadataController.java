@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.metadata.domain.FormFieldMetadata;
-import com.ruoyi.metadata.service.FormFieldMetadataService;
+import com.ruoyi.metadata.service.IFormFieldMetadataService;
 
 /**
  * 表单字段元数据Controller
@@ -29,7 +29,7 @@ import com.ruoyi.metadata.service.FormFieldMetadataService;
 @RequestMapping("/metadata/field")
 public class FormFieldMetadataController extends BaseController {
     @Autowired
-    private FormFieldMetadataService formFieldMetadataService;
+    private IFormFieldMetadataService IFormFieldMetadataService;
 
     /**
      * 查询表单字段元数据列表
@@ -38,7 +38,7 @@ public class FormFieldMetadataController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(FormFieldMetadata formFieldMetadata) {
         startPage();
-        List<FormFieldMetadata> list = formFieldMetadataService.selectFormFieldMetadataList(formFieldMetadata);
+        List<FormFieldMetadata> list = IFormFieldMetadataService.selectFormFieldMetadataList(formFieldMetadata);
         return getDataTable(list);
     }
 
@@ -48,7 +48,7 @@ public class FormFieldMetadataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:field:list')")
     @GetMapping("/listByMetadataId/{metadataId}")
     public AjaxResult listByMetadataId(@PathVariable("metadataId") String metadataId) {
-        List<FormFieldMetadata> list = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> list = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         return AjaxResult.success(list);
     }
 
@@ -58,7 +58,7 @@ public class FormFieldMetadataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:field:query')")
     @GetMapping(value = "/{fieldId}")
     public AjaxResult getInfo(@PathVariable("fieldId") String fieldId) {
-        return AjaxResult.success(formFieldMetadataService.selectFormFieldMetadataByFieldId(fieldId));
+        return AjaxResult.success(IFormFieldMetadataService.selectFormFieldMetadataByFieldId(fieldId));
     }
 
     /**
@@ -68,7 +68,7 @@ public class FormFieldMetadataController extends BaseController {
     @Log(title = "表单字段元数据", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody FormFieldMetadata formFieldMetadata) {
-        return toAjax(formFieldMetadataService.insertFormFieldMetadata(formFieldMetadata));
+        return toAjax(IFormFieldMetadataService.insertFormFieldMetadata(formFieldMetadata));
     }
 
     /**
@@ -78,7 +78,7 @@ public class FormFieldMetadataController extends BaseController {
     @Log(title = "表单字段元数据", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody FormFieldMetadata formFieldMetadata) {
-        return toAjax(formFieldMetadataService.updateFormFieldMetadata(formFieldMetadata));
+        return toAjax(IFormFieldMetadataService.updateFormFieldMetadata(formFieldMetadata));
     }
 
     /**
@@ -88,7 +88,7 @@ public class FormFieldMetadataController extends BaseController {
     @Log(title = "表单字段元数据", businessType = BusinessType.DELETE)
     @DeleteMapping("/{fieldIds}")
     public AjaxResult remove(@PathVariable String[] fieldIds) {
-        return toAjax(formFieldMetadataService.deleteFormFieldMetadataByFieldIds(fieldIds));
+        return toAjax(IFormFieldMetadataService.deleteFormFieldMetadataByFieldIds(fieldIds));
     }
 
     /**
@@ -98,6 +98,6 @@ public class FormFieldMetadataController extends BaseController {
     @Log(title = "表单字段元数据", businessType = BusinessType.UPDATE)
     @PostMapping("/batchSave/{metadataId}")
     public AjaxResult batchSave(@PathVariable("metadataId") String metadataId, @RequestBody List<FormFieldMetadata> fieldList) {
-        return toAjax(formFieldMetadataService.batchSaveFormFieldMetadata(metadataId, fieldList));
+        return toAjax(IFormFieldMetadataService.batchSaveFormFieldMetadata(metadataId, fieldList));
     }
 }

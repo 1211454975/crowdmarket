@@ -9,7 +9,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.utils.SecurityUtils;
 import com.ruoyi.metadata.mapper.FormViewConfigMapper;
 import com.ruoyi.metadata.domain.FormViewConfig;
-import com.ruoyi.metadata.service.FormViewConfigService;
+import com.ruoyi.metadata.service.IFormViewConfigService;
 
 /**
  * 表单视图配置Service业务层处理
@@ -17,7 +17,7 @@ import com.ruoyi.metadata.service.FormViewConfigService;
  * @author ruoyi
  */
 @Service
-public class FormViewConfigServiceImpl implements FormViewConfigService {
+public class FormViewConfigServiceImpl implements IFormViewConfigService {
     @Autowired
     private FormViewConfigMapper formViewConfigMapper;
 

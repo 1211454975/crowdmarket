@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ruoyi.metadata.mapper.ChartConfigMapper">  
+      
+    <resultMap type="ChartConfig" id="ChartConfigResult">  
+        <id     property="configId"       column="config_id"      />  
+        <result property="chartId"        column="chart_id"       />  
+        <result property="dimensionFields" column="dimension_fields" />  
+        <result property="measureFields"   column="measure_fields"  />  
+        <result property="filterCondition" column="filter_condition" />  
+        <result property="sortConfig"      column="sort_config"     />  
+        <result property="styleConfig"     column="style_config"    />  
+        <result property="dataLimit"       column="data_limit"      />  
+        <result property="refreshInterval" column="refresh_interval" />  
+        <result property="tenantId"        column="tenant_id"       />  
+    </resultMap>  
+      
+    <sql id="selectChartConfigVo">  
+        select config_id, chart_id, dimension_fields, measure_fields, filter_condition,   
+               sort_config, style_config, data_limit, refresh_interval, tenant_id  
+        from chart_config  
+    </sql>  
+      
+    <select id="selectChartConfigList" parameterType="ChartConfig" resultMap="ChartConfigResult">  
+        <include refid="selectChartConfigVo"/>  
+        <where>  
+            <if test="chartId != null and chartId != ''">  
+                AND chart_id = #{chartId}  
+            </if>  
+            <if test="dataLimit != null">  
+                AND data_limit = #{dataLimit}  
+            </if>  
+            <if test="refreshInterval != null">  
+                AND refresh_interval = #{refreshInterval}  
+            </if>  
+            <if test="tenantId != null and tenantId != ''">  
+                AND tenant_id = #{tenantId}  
+            </if>  
+        </where>  
+    </select>  
+      
+    <select id="selectChartConfigById" parameterType="String" resultMap="ChartConfigResult">  
+        <include refid="selectChartConfigVo"/>  
+        where config_id = #{configId}  
+    </select>  
+      
+    <select id="selectChartConfigByChartId" parameterType="String" resultMap="ChartConfigResult">  
+        <include refid="selectChartConfigVo"/>  
+        where chart_id = #{chartId}  
+    </select>  
+      
+    <insert id="insertChartConfig" parameterType="ChartConfig">  
+        insert into chart_config  
+        <trim prefix="(" suffix=")" suffixOverrides=",">  
+            <if test="configId != null">config_id,</if>  
+            <if test="chartId != null">chart_id,</if>  
+            <if test="dimensionFields != null">dimension_fields,</if>  
+            <if test="measureFields != null">measure_fields,</if>  
+            <if test="filterCondition != null">filter_condition,</if>  
+            <if test="sortConfig != null">sort_config,</if>  
+            <if test="styleConfig != null">style_config,</if>  
+            <if test="dataLimit != null">data_limit,</if>  
+            <if test="refreshInterval != null">refresh_interval,</if>  
+            <if test="tenantId != null">tenant_id,</if>  
+        </trim>  
+        <trim prefix="values (" suffix=")" suffixOverrides=",">  
+            <if test="configId != null">#{configId},</if>  
+            <if test="chartId != null">#{chartId},</if>  
+            <if test="dimensionFields != null">#{dimensionFields},</if>  
+            <if test="measureFields != null">#{measureFields},</if>  
+            <if test="filterCondition != null">#{filterCondition},</if>  
+            <if test="sortConfig != null">#{sortConfig},</if>  
+            <if test="styleConfig != null">#{styleConfig},</if>  
+            <if test="dataLimit != null">#{dataLimit},</if>  
+            <if test="refreshInterval != null">#{refreshInterval},</if>  
+            <if test="tenantId != null">#{tenantId},</if>  
+        </trim>  
+    </insert>  
+      
+    <update id="updateChartConfig" parameterType="ChartConfig">  
+        update chart_config  
+        <trim prefix="SET" suffixOverrides=",">  
+            <if test="chartId != null">chart_id = #{chartId},</if>  
+            <if test="dimensionFields != null">dimension_fields = #{dimensionFields},</if>  
+            <if test="measureFields != null">measure_fields = #{measureFields},</if>  
+            <if test="filterCondition != null">filter_condition = #{filterCondition},</if>  
+            <if test="sortConfig != null">sort_config = #{sortConfig},</if>  
+            <if test="styleConfig != null">style_config = #{styleConfig},</if>  
+            <if test="dataLimit != null">data_limit = #{dataLimit},</if>  
+            <if test="refreshInterval != null">refresh_interval = #{refreshInterval},</if>  
+        </trim>  
+        where config_id = #{configId} and tenant_id = #{tenantId}  
+    </update>  
+      
+    <delete id="deleteChartConfigById" parameterType="String">  
+        delete from chart_config where config_id = #{configId}  
+    </delete>  
+      
+    <delete id="deleteChartConfigByIds" parameterType="String">  
+        delete from chart_config where config_id in   
+        <foreach item="configId" collection="array" open="(" separator="," close=")">  
+            #{configId}  
+        </foreach>  
+    </delete>  
+      
+    <delete id="deleteChartConfigByChartId" parameterType="String">  
+        delete from chart_config where chart_id = #{chartId}  
+    </delete>  
+      
+    <select id="countChartConfigByChartId" parameterType="String" resultType="Integer">  
+        select count(1) from chart_config where chart_id = #{chartId}  
+    </select>  
+</mapper>

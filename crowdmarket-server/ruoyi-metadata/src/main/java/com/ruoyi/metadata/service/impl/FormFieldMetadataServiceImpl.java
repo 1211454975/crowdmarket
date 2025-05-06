@@ -5,11 +5,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.utils.SecurityUtils;
 import com.ruoyi.metadata.mapper.FormFieldMetadataMapper;
 import com.ruoyi.metadata.domain.FormFieldMetadata;
-import com.ruoyi.metadata.service.FormFieldMetadataService;
+import com.ruoyi.metadata.service.IFormFieldMetadataService;
 
 /**
  * 表单字段元数据Service业务层处理
@@ -17,7 +16,7 @@ import com.ruoyi.metadata.service.FormFieldMetadataService;
  * @author ruoyi
  */
 @Service
-public class FormFieldMetadataServiceImpl implements FormFieldMetadataService {
+public class FormFieldMetadataServiceImpl implements IFormFieldMetadataService {
     @Autowired
     private FormFieldMetadataMapper formFieldMetadataMapper;
 

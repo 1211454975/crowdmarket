@@ -6,8 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ruoyi.formdata.service.FormDataService;
-import com.ruoyi.metadata.service.ChartDataProvider;
+import com.ruoyi.formdata.service.IFormDataService;
+import com.ruoyi.metadata.service.IChartDataProvider;
 
 /**
  * 图表数据提供者实现
@@ -15,9 +15,9 @@ import com.ruoyi.metadata.service.ChartDataProvider;
  * @author ruoyi
  */
 @Service
-public class ChartDataProviderImpl implements ChartDataProvider {
+public class ChartDataProviderImpl implements IChartDataProvider {
     @Autowired
-    private FormDataService formDataService;
+    private IFormDataService formDataService;
 
     @Override
     public List<Map<String, Object>> selectFormDataList(String metadataId, Map<String, Object> params) {

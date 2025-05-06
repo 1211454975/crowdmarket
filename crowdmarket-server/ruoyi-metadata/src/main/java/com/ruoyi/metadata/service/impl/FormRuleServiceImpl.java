@@ -20,8 +20,8 @@ import com.ruoyi.metadata.domain.FormRuleCondition;
 import com.ruoyi.metadata.mapper.FormRuleActionMapper;
 import com.ruoyi.metadata.mapper.FormRuleConditionMapper;
 import com.ruoyi.metadata.mapper.FormRuleMapper;
-import com.ruoyi.metadata.service.FormFieldMetadataService;
-import com.ruoyi.metadata.service.FormRuleService;
+import com.ruoyi.metadata.service.IFormFieldMetadataService;
+import com.ruoyi.metadata.service.IFormRuleService;
 
 /**
  * 表单规则Service业务层处理
@@ -29,7 +29,7 @@ import com.ruoyi.metadata.service.FormRuleService;
  * @author ruoyi
  */
 @Service
-public class FormRuleServiceImpl implements FormRuleService {
+public class FormRuleServiceImpl implements IFormRuleService {
     @Autowired
     private FormRuleMapper formRuleMapper;
 
@@ -40,7 +40,7 @@ public class FormRuleServiceImpl implements FormRuleService {
     private FormRuleActionMapper formRuleActionMapper;
 
     @Autowired
-    private FormFieldMetadataService formFieldMetadataService;
+    private IFormFieldMetadataService IFormFieldMetadataService;
 
     /**
      * 查询表单规则
@@ -300,7 +300,7 @@ public class FormRuleServiceImpl implements FormRuleService {
         }
 
         // 获取字段列表，用于字段ID到字段名的映射
-        List<FormFieldMetadata> fieldList = formFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
+        List<FormFieldMetadata> fieldList = IFormFieldMetadataService.selectFormFieldMetadataByMetadataId(metadataId);
         Map<String, FormFieldMetadata> fieldMap = new HashMap<>();
         for (FormFieldMetadata field : fieldList) {
             fieldMap.put(field.getFieldId(), field);

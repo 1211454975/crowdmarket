@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ruoyi.metadata.mapper.FormRuleConditionMapper">  
+      
+    <resultMap type="FormRuleCondition" id="FormRuleConditionResult">  
+        <id     property="conditionId"    column="condition_id"   />  
+        <result property="ruleId"         column="rule_id"        />  
+        <result property="fieldId"        column="field_id"       />  
+        <result property="operator"       column="operator"       />  
+        <result property="value"          column="value"          />  
+        <result property="logicType"      column="logic_type"     />  
+        <result property="groupId"        column="group_id"       />  
+        <result property="tenantId"       column="tenant_id"      />  
+    </resultMap>  
+      
+    <sql id="selectFormRuleConditionVo">  
+        select condition_id, rule_id, field_id, operator, value, logic_type, group_id, tenant_id  
+        from form_rule_condition  
+    </sql>  
+      
+    <select id="selectFormRuleConditionList" parameterType="FormRuleCondition" resultMap="FormRuleConditionResult">  
+        <include refid="selectFormRuleConditionVo"/>  
+        <where>  
+            <if test="ruleId != null and ruleId != ''">  
+                AND rule_id = #{ruleId}  
+            </if>  
+            <if test="fieldId != null and fieldId != ''">  
+                AND field_id = #{fieldId}  
+            </if>  
+            <if test="operator != null and operator != ''">  
+                AND operator = #{operator}  
+            </if>  
+            <if test="logicType != null and logicType != ''">  
+                AND logic_type = #{logicType}  
+            </if>  
+            <if test="groupId != null and groupId != ''">  
+                AND group_id = #{groupId}  
+            </if>  
+            <if test="tenantId != null and tenantId != ''">  
+                AND tenant_id = #{tenantId}  
+            </if>  
+        </where>  
+    </select>  
+      
+    <select id="selectFormRuleConditionById" parameterType="String" resultMap="FormRuleConditionResult">  
+        <include refid="selectFormRuleConditionVo"/>  
+        where condition_id = #{conditionId}  
+    </select>  
+      
+    <select id="selectFormRuleConditionByRuleId" parameterType="String" resultMap="FormRuleConditionResult">  
+        <include refid="selectFormRuleConditionVo"/>  
+        where rule_id = #{ruleId}  
+        order by group_id, logic_type  
+    </select>  
+      
+    <select id="selectFormRuleConditionByGroupId" parameterType="String" resultMap="FormRuleConditionResult">  
+        <include refid="selectFormRuleConditionVo"/>  
+        where group_id = #{groupId}  
+        order by logic_type  
+    </select>  
+      
+    <insert id="insertFormRuleCondition" parameterType="FormRuleCondition">  
+        insert into form_rule_condition  
+        <trim prefix="(" suffix=")" suffixOverrides=",">  
+            <if test="conditionId != null">condition_id,</if>  
+            <if test="ruleId != null">rule_id,</if>  
+            <if test="fieldId != null">field_id,</if>  
+            <if test="operator != null">operator,</if>  
+            <if test="value != null">value,</if>  
+            <if test="logicType != null">logic_type,</if>  
+            <if test="groupId != null">group_id,</if>  
+            <if test="tenantId != null">tenant_id,</if>  
+        </trim>  
+        <trim prefix="values (" suffix=")" suffixOverrides=",">  
+            <if test="conditionId != null">#{conditionId},</if>  
+            <if test="ruleId != null">#{ruleId},</if>  
+            <if test="fieldId != null">#{fieldId},</if>  
+            <if test="operator != null">#{operator},</if>  
+            <if test="value != null">#{value},</if>  
+            <if test="logicType != null">#{logicType},</if>  
+            <if test="groupId != null">#{groupId},</if>  
+            <if test="tenantId != null">#{tenantId},</if>  
+        </trim>  
+    </insert>  
+      
+    <update id="updateFormRuleCondition" parameterType="FormRuleCondition">  
+        update form_rule_condition  
+        <trim prefix="SET" suffixOverrides=",">  
+            <if test="ruleId != null">rule_id = #{ruleId},</if>  
+            <if test="fieldId != null">field_id = #{fieldId},</if>  
+            <if test="operator != null">operator = #{operator},</if>  
+            <if test="value != null">value = #{value},</if>  
+            <if test="logicType != null">logic_type = #{logicType},</if>  
+            <if test="groupId != null">group_id = #{groupId},</if>  
+        </trim>  
+        where condition_id = #{conditionId} and tenant_id = #{tenantId}  
+    </update>  
+      
+    <delete id="deleteFormRuleConditionById" parameterType="String">  
+        delete from form_rule_condition where condition_id = #{conditionId}  
+    </delete>  
+      
+    <delete id="deleteFormRuleConditionByIds" parameterType="String">  
+        delete from form_rule_condition where condition_id in   
+        <foreach item="conditionId" collection="array" open="(" separator="," close=")">  
+            #{conditionId}  
+        </foreach>  
+    </delete>  
+      
+    <delete id="deleteFormRuleConditionByRuleId" parameterType="String">  
+        delete from form_rule_condition where rule_id = #{ruleId}  
+    </delete>  
+      
+    <delete id="deleteFormRuleConditionByGroupId" parameterType="String">  
+        delete from form_rule_condition where group_id = #{groupId}  
+    </delete>  
+      
+    <select id="countFormRuleConditionByRuleId" parameterType="String" resultType="Integer">  
+        select count(1) from form_rule_condition where rule_id = #{ruleId}  
+    </select>  
+      
+    <select id="countFormRuleConditionByFieldId" parameterType="String" resultType="Integer">  
+        select count(1) from form_rule_condition where field_id = #{fieldId}  
+    </select>  
+</mapper>

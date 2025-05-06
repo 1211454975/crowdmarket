@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ruoyi.metadata.mapper.TenantDatabaseMapper">  
+      
+    <resultMap type="TenantDatabase" id="TenantDatabaseResult">  
+        <id     property="id"           column="id"            />  
+        <result property="tenantId"      column="tenant_id"     />  
+        <result property="dbName"        column="db_name"       />  
+        <result property="dbHost"        column="db_host"       />  
+        <result property="dbPort"        column="db_port"       />  
+        <result property="dbUsername"    column="db_username"   />  
+        <result property="dbPassword"    column="db_password"   />  
+        <result property="status"        column="status"        />  
+        <result property="createBy"      column="create_by"     />  
+        <result property="createTime"    column="create_time"   />  
+        <result property="updateBy"      column="update_by"     />  
+        <result property="updateTime"    column="update_time"   />  
+    </resultMap>  
+      
+    <sql id="selectTenantDatabaseVo">  
+        select id, tenant_id, db_name, db_host, db_port, db_username, db_password, status,   
+               create_by, create_time, update_by, update_time  
+        from tenant_database  
+    </sql>  
+      
+    <select id="selectTenantDatabaseList" parameterType="TenantDatabase" resultMap="TenantDatabaseResult">  
+        <include refid="selectTenantDatabaseVo"/>  
+        <where>  
+            <if test="tenantId != null and tenantId != ''">  
+                AND tenant_id = #{tenantId}  
+            </if>  
+            <if test="dbName != null and dbName != ''">  
+                AND db_name like concat('%', #{dbName}, '%')  
+            </if>  
+            <if test="dbHost != null and dbHost != ''">  
+                AND db_host like concat('%', #{dbHost}, '%')  
+            </if>  
+            <if test="status != null">  
+                AND status = #{status}  
+            </if>  
+        </where>  
+    </select>  
+      
+    <select id="selectTenantDatabaseById" parameterType="String" resultMap="TenantDatabaseResult">  
+        <include refid="selectTenantDatabaseVo"/>  
+        where id = #{id}  
+    </select>  
+      
+    <select id="selectTenantDatabaseByTenantId" parameterType="String" resultMap="TenantDatabaseResult">  
+        <include refid="selectTenantDatabaseVo"/>  
+        where tenant_id = #{tenantId}  
+    </select>  
+      
+    <select id="checkTenantDatabaseExists" parameterType="String" resultType="Integer">  
+        select count(1) from tenant_database where tenant_id = #{tenantId}  
+    </select>  
+      
+    <insert id="insertTenantDatabase" parameterType="TenantDatabase">  
+        insert into tenant_database  
+        <trim prefix="(" suffix=")" suffixOverrides=",">  
+            <if test="id != null">id,</if>  
+            <if test="tenantId != null">tenant_id,</if>  
+            <if test="dbName != null">db_name,</if>  
+            <if test="dbHost != null">db_host,</if>  
+            <if test="dbPort != null">db_port,</if>  
+            <if test="dbUsername != null">db_username,</if>  
+            <if test="dbPassword != null">db_password,</if>  
+            <if test="status != null">status,</if>  
+            <if test="createBy != null">create_by,</if>  
+            <if test="createTime != null">create_time,</if>  
+            <if test="updateBy != null">update_by,</if>  
+            <if test="updateTime != null">update_time,</if>  
+        </trim>  
+        <trim prefix="values (" suffix=")" suffixOverrides=",">  
+            <if test="id != null">#{id},</if>  
+            <if test="tenantId != null">#{tenantId},</if>  
+            <if test="dbName != null">#{dbName},</if>  
+            <if test="dbHost != null">#{dbHost},</if>  
+            <if test="dbPort != null">#{dbPort},</if>  
+            <if test="dbUsername != null">#{dbUsername},</if>  
+            <if test="dbPassword != null">#{dbPassword},</if>  
+            <if test="status != null">#{status},</if>  
+            <if test="createBy != null">#{createBy},</if>  
+            <if test="createTime != null">#{createTime},</if>  
+            <if test="updateBy != null">#{updateBy},</if>  
+            <if test="updateTime != null">#{updateTime},</if>  
+        </trim>  
+    </insert>  
+      
+    <update id="updateTenantDatabase" parameterType="TenantDatabase">  
+        update tenant_database  
+        <trim prefix="SET" suffixOverrides=",">  
+            <if test="tenantId != null">tenant_id = #{tenantId},</if>  
+            <if test="dbName != null">db_name = #{dbName},</if>  
+            <if test="dbHost != null">db_host = #{dbHost},</if>  
+            <if test="dbPort != null">db_port = #{dbPort},</if>  
+            <if test="dbUsername != null">db_username = #{dbUsername},</if>  
+            <if test="dbPassword != null">db_password = #{dbPassword},</if>  
+            <if test="status != null">status = #{status},</if>  
+            <if test="updateBy != null">update_by = #{updateBy},</if>  
+            <if test="updateTime != null">update_time = #{updateTime},</if>  
+        </trim>  
+        where id = #{id}  
+    </update>  
+      
+    <update id="updateTenantDatabaseStatus">  
+        update tenant_database set status = #{status}, update_time = sysdate(), update_by = #{updateBy}  
+        where id = #{id}  
+    </update>  
+      
+    <delete id="deleteTenantDatabaseById" parameterType="String">  
+        delete from tenant_database where id = #{id}  
+    </delete>  
+      
+    <delete id="deleteTenantDatabaseByIds" parameterType="String">  
+        delete from tenant_database where id in   
+        <foreach item="id" collection="array" open="(" separator="," close=")">  
+            #{id}  
+        </foreach>  
+    </delete>  
+      
+    <delete id="deleteTenantDatabaseByTenantId" parameterType="String">  
+        delete from tenant_database where tenant_id = #{tenantId}  
+    </delete>  
+</mapper>

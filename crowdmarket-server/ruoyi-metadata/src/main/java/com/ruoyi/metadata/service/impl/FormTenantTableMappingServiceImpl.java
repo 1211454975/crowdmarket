@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.metadata.mapper.FormTenantTableMappingMapper;
 import com.ruoyi.metadata.domain.FormTenantTableMapping;
-import com.ruoyi.metadata.service.FormTenantTableMappingService;
+import com.ruoyi.metadata.service.IFormTenantTableMappingService;
 
 /**
  * 表单租户表映射Service业务层处理
@@ -13,7 +13,7 @@ import com.ruoyi.metadata.service.FormTenantTableMappingService;
  * @author ruoyi
  */
 @Service
-public class FormTenantTableMappingServiceImpl implements FormTenantTableMappingService {
+public class FormTenantTableMappingServiceImpl implements IFormTenantTableMappingService {
     @Autowired
     private FormTenantTableMappingMapper formTenantTableMappingMapper;
 

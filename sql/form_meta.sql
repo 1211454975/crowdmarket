@@ -203,7 +203,7 @@ CREATE TABLE `tenant_database` (
 -- ----------------------------  
 -- 修改sys_company表，添加数据库状态字段  
 -- ----------------------------  
-ALTER TABLE `sys_company` ADD COLUMN `db_status` tinyint NOT NULL DEFAULT '0' COMMENT '数据库状态(0未创建,1已创建,2创建失败)';  
+-- ALTER TABLE `sys_company` ADD COLUMN `db_status` tinyint NOT NULL DEFAULT '0' COMMENT '数据库状态(0未创建,1已创建,2创建失败)';  
   
 -- ----------------------------  
 -- 添加菜单项  

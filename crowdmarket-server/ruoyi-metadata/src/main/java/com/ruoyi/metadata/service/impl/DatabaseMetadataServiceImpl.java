@@ -24,8 +24,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.metadata.domain.FormFieldMetadata;
 import com.ruoyi.metadata.domain.FormMetadata;
 import com.ruoyi.metadata.domain.TenantDatabase;
-import com.ruoyi.metadata.service.DatabaseMetadataService;
-import com.ruoyi.metadata.service.TenantDatabaseService;
+import com.ruoyi.metadata.service.IDatabaseMetadataService;
+import com.ruoyi.metadata.service.ITenantDatabaseService;
 
 /**
  * 数据库元数据提取服务实现
@@ -33,11 +33,11 @@ import com.ruoyi.metadata.service.TenantDatabaseService;
  * @author ruoyi
  */
 @Service
-public class DatabaseMetadataServiceImpl implements DatabaseMetadataService {
+public class DatabaseMetadataServiceImpl implements IDatabaseMetadataService {
     private static final Logger log = LoggerFactory.getLogger(DatabaseMetadataServiceImpl.class);
 
     @Autowired
-    private TenantDatabaseService tenantDatabaseService;
+    private ITenantDatabaseService tenantDatabaseService;
 
     @Autowired
     private DataSource masterDataSource;

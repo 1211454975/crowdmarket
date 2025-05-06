@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ruoyi.metadata.mapper.FormRuleMapper">  
+      
+    <resultMap type="FormRule" id="FormRuleResult">  
+        <id     property="ruleId"        column="rule_id"       />  
+        <result property="metadataId"     column="metadata_id"    />  
+        <result property="ruleName"       column="rule_name"      />  
+        <result property="ruleType"       column="rule_type"      />  
+        <result property="ruleDesc"       column="rule_desc"      />  
+        <result property="isActive"       column="is_active"      />  
+        <result property="executionOrder" column="execution_order" />  
+        <result property="tenantId"       column="tenant_id"      />  
+        <result property="createBy"       column="create_by"      />  
+        <result property="createTime"     column="create_time"    />  
+        <result property="updateBy"       column="update_by"      />  
+        <result property="updateTime"     column="update_time"    />  
+    </resultMap>  
+      
+    <sql id="selectFormRuleVo">  
+        select rule_id, metadata_id, rule_name, rule_type, rule_desc, is_active, execution_order,   
+               tenant_id, create_by, create_time, update_by, update_time  
+        from form_rule  
+    </sql>  
+      
+    <select id="selectFormRuleList" parameterType="FormRule" resultMap="FormRuleResult">  
+        <include refid="selectFormRuleVo"/>  
+        <where>  
+            <if test="metadataId != null and metadataId != ''">  
+                AND metadata_id = #{metadataId}  
+            </if>  
+            <if test="ruleName != null and ruleName != ''">  
+                AND rule_name like concat('%', #{ruleName}, '%')  
+            </if>  
+            <if test="ruleType != null and ruleType != ''">  
+                AND rule_type = #{ruleType}  
+            </if>  
+            <if test="isActive != null">  
+                AND is_active = #{isActive}  
+            </if>  
+            <if test="tenantId != null and tenantId != ''">  
+                AND tenant_id = #{tenantId}  
+            </if>  
+        </where>  
+        order by execution_order  
+    </select>  
+      
+    <select id="selectFormRuleById" parameterType="String" resultMap="FormRuleResult">  
+        <include refid="selectFormRuleVo"/>  
+        where rule_id = #{ruleId}  
+    </select>  
+      
+    <select id="selectFormRuleByMetadataId" parameterType="String" resultMap="FormRuleResult">  
+        <include refid="selectFormRuleVo"/>  
+        where metadata_id = #{metadataId}  
+        order by execution_order  
+    </select>  
+      
+    <select id="selectActiveFormRuleByMetadataId" parameterType="String" resultMap="FormRuleResult">  
+        <include refid="selectFormRuleVo"/>  
+        where metadata_id = #{metadataId} and is_active = 1  
+        order by execution_order  
+    </select>  
+      
+    <select id="selectFormRuleByType" resultMap="FormRuleResult">  
+        <include refid="selectFormRuleVo"/>  
+        where metadata_id = #{metadataId} and rule_type = #{ruleType} and is_active = 1  
+        order by execution_order  
+    </select>  
+      
+    <insert id="insertFormRule" parameterType="FormRule">  
+        insert into form_rule  
+        <trim prefix="(" suffix=")" suffixOverrides=",">  
+            <if test="ruleId != null">rule_id,</if>  
+            <if test="metadataId != null">metadata_id,</if>  
+            <if test="ruleName != null">rule_name,</if>  
+            <if test="ruleType != null">rule_type,</if>  
+            <if test="ruleDesc != null">rule_desc,</if>  
+            <if test="isActive != null">is_active,</if>  
+            <if test="executionOrder != null">execution_order,</if>  
+            <if test="tenantId != null">tenant_id,</if>  
+            <if test="createBy != null">create_by,</if>  
+            <if test="createTime != null">create_time,</if>  
+            <if test="updateBy != null">update_by,</if>  
+            <if test="updateTime != null">update_time,</if>  
+        </trim>  
+        <trim prefix="values (" suffix=")" suffixOverrides=",">  
+            <if test="ruleId != null">#{ruleId},</if>  
+            <if test="metadataId != null">#{metadataId},</if>  
+            <if test="ruleName != null">#{ruleName},</if>  
+            <if test="ruleType != null">#{ruleType},</if>  
+            <if test="ruleDesc != null">#{ruleDesc},</if>  
+            <if test="isActive != null">#{isActive},</if>  
+            <if test="executionOrder != null">#{executionOrder},</if>  
+            <if test="tenantId != null">#{tenantId},</if>  
+            <if test="createBy != null">#{createBy},</if>  
+            <if test="createTime != null">#{createTime},</if>  
+            <if test="updateBy != null">#{updateBy},</if>  
+            <if test="updateTime != null">#{updateTime},</if>  
+        </trim>  
+    </insert>  
+      
+    <update id="updateFormRule" parameterType="FormRule">  
+        update form_rule  
+        <trim prefix="SET" suffixOverrides=",">  
+            <if test="metadataId != null">metadata_id = #{metadataId},</if>  
+            <if test="ruleName != null">rule_name = #{ruleName},</if>  
+            <if test="ruleType != null">rule_type = #{ruleType},</if>  
+            <if test="ruleDesc != null">rule_desc = #{ruleDesc},</if>  
+            <if test="isActive != null">is_active = #{isActive},</if>  
+            <if test="executionOrder != null">execution_order = #{executionOrder},</if>  
+            <if test="updateBy != null">update_by = #{updateBy},</if>  
+            <if test="updateTime != null">update_time = #{updateTime},</if>  
+        </trim>  
+        where rule_id = #{ruleId} and tenant_id = #{tenantId}  
+    </update>  
+      
+    <update id="updateRuleStatus">  
+        update form_rule set is_active = #{isActive}, update_time = sysdate(), update_by = #{updateBy}  
+        where rule_id = #{ruleId} and tenant_id = #{tenantId}  
+    </update>  
+      
+    <delete id="deleteFormRuleById" parameterType="String">  
+        delete from form_rule where rule_id = #{ruleId}  
+    </delete>  
+      
+    <delete id="deleteFormRuleByIds" parameterType="String">  
+        delete from form_rule where rule_id in   
+        <foreach item="ruleId" collection="array" open="(" separator="," close=")">  
+            #{ruleId}  
+        </foreach>  
+    </delete>  
+      
+    <delete id="deleteFormRuleByMetadataId" parameterType="String">  
+        delete from form_rule where metadata_id = #{metadataId}  
+    </delete>  
+      
+    <select id="countFormRuleByMetadataId" parameterType="String" resultType="Integer">  
+        select count(1) from form_rule where metadata_id = #{metadataId}  
+    </select>  
+</mapper>

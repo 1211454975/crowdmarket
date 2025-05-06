@@ -19,7 +19,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.encrypt.EncryptUtils;
 import com.ruoyi.metadata.domain.TenantDatabase;
 import com.ruoyi.metadata.mapper.TenantDatabaseMapper;
-import com.ruoyi.metadata.service.TenantDatabaseService;
+import com.ruoyi.metadata.service.ITenantDatabaseService;
 
 /**
  * 租户数据库配置Service业务层处理
@@ -27,7 +27,7 @@ import com.ruoyi.metadata.service.TenantDatabaseService;
  * @author ruoyi
  */
 @Service
-public class TenantDatabaseServiceImpl implements TenantDatabaseService {
+public class TenantDatabaseServiceImpl implements ITenantDatabaseService {
     private static final Logger log = LoggerFactory.getLogger(TenantDatabaseServiceImpl.class);
 
     @Autowired

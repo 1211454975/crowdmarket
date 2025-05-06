@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ruoyi.metadata.domain.FormViewConfig;
-import com.ruoyi.metadata.service.FormViewConfigService;
+import com.ruoyi.metadata.service.IFormViewConfigService;
 
 /**
  * 表单视图配置Controller
@@ -30,7 +30,7 @@ import com.ruoyi.metadata.service.FormViewConfigService;
 @RequestMapping("/metadata/view")
 public class FormViewConfigController extends BaseController {
     @Autowired
-    private FormViewConfigService formViewConfigService;
+    private IFormViewConfigService IFormViewConfigService;
 
     /**
      * 查询表单视图配置列表
@@ -39,7 +39,7 @@ public class FormViewConfigController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(FormViewConfig formViewConfig) {
         startPage();
-        List<FormViewConfig> list = formViewConfigService.selectFormViewConfigList(formViewConfig);
+        List<FormViewConfig> list = IFormViewConfigService.selectFormViewConfigList(formViewConfig);
         return getDataTable(list);
     }
 
@@ -49,7 +49,7 @@ public class FormViewConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:view:list')")
     @GetMapping("/listByMetadataId/{metadataId}")
     public AjaxResult listByMetadataId(@PathVariable("metadataId") String metadataId) {
-        List<FormViewConfig> list = formViewConfigService.selectFormViewConfigByMetadataId(metadataId);
+        List<FormViewConfig> list = IFormViewConfigService.selectFormViewConfigByMetadataId(metadataId);
         return AjaxResult.success(list);
     }
 
@@ -59,7 +59,7 @@ public class FormViewConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:view:query')")
     @GetMapping("/default/{metadataId}/{viewType}")
     public AjaxResult getDefaultView(@PathVariable("metadataId") String metadataId, @PathVariable("viewType") String viewType) {
-        FormViewConfig viewConfig = formViewConfigService.selectDefaultFormViewConfig(metadataId, viewType);
+        FormViewConfig viewConfig = IFormViewConfigService.selectDefaultFormViewConfig(metadataId, viewType);
         return AjaxResult.success(viewConfig);
     }
 
@@ -69,7 +69,7 @@ public class FormViewConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:view:query')")
     @GetMapping(value = "/{viewId}")
     public AjaxResult getInfo(@PathVariable("viewId") String viewId) {
-        return AjaxResult.success(formViewConfigService.selectFormViewConfigByViewId(viewId));
+        return AjaxResult.success(IFormViewConfigService.selectFormViewConfigByViewId(viewId));
     }
 
     /**
@@ -79,7 +79,7 @@ public class FormViewConfigController extends BaseController {
     @Log(title = "表单视图配置", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody FormViewConfig formViewConfig) {
-        return toAjax(formViewConfigService.insertFormViewConfig(formViewConfig));
+        return toAjax(IFormViewConfigService.insertFormViewConfig(formViewConfig));
     }
 
     /**
@@ -89,7 +89,7 @@ public class FormViewConfigController extends BaseController {
     @Log(title = "表单视图配置", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody FormViewConfig formViewConfig) {
-        return toAjax(formViewConfigService.updateFormViewConfig(formViewConfig));
+        return toAjax(IFormViewConfigService.updateFormViewConfig(formViewConfig));
     }
 
     /**
@@ -99,7 +99,7 @@ public class FormViewConfigController extends BaseController {
     @Log(title = "表单视图配置", businessType = BusinessType.DELETE)
     @DeleteMapping("/{viewIds}")
     public AjaxResult remove(@PathVariable String[] viewIds) {
-        return toAjax(formViewConfigService.deleteFormViewConfigByViewIds(viewIds));
+        return toAjax(IFormViewConfigService.deleteFormViewConfigByViewIds(viewIds));
     }
 
     /**
@@ -109,6 +109,6 @@ public class FormViewConfigController extends BaseController {
     @Log(title = "表单视图配置", businessType = BusinessType.UPDATE)
     @PutMapping("/setDefault/{viewId}")
     public AjaxResult setDefault(@PathVariable("viewId") String viewId) {
-        return toAjax(formViewConfigService.setDefaultFormViewConfig(viewId));
+        return toAjax(IFormViewConfigService.setDefaultFormViewConfig(viewId));
     }
 }

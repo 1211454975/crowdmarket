@@ -9,10 +9,9 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.utils.SecurityUtils;
 import com.ruoyi.metadata.mapper.FormMetadataMapper;
 import com.ruoyi.metadata.domain.FormMetadata;
-import com.ruoyi.metadata.service.FormMetadataService;
+import com.ruoyi.metadata.service.IFormMetadataService;
 import com.ruoyi.metadata.mapper.FormFieldMetadataMapper;
 import com.ruoyi.metadata.mapper.FormTenantTableMappingMapper;
-import com.ruoyi.metadata.domain.FormTenantTableMapping;
 
 /**
  * 表单元数据Service业务层处理
@@ -20,7 +19,7 @@ import com.ruoyi.metadata.domain.FormTenantTableMapping;
  * @author ruoyi
  */
 @Service
-public class FormMetadataServiceImpl implements FormMetadataService {
+public class FormMetadataServiceImpl implements IFormMetadataService {
     @Autowired
     private FormMetadataMapper formMetadataMapper;
 

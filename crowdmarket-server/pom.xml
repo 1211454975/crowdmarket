@@ -26,7 +26,6 @@
         <module>ruoyi-business</module>
         <module>ruoyi-admin</module>
         <module>ruoyi-monitor</module>
-        <module>ruoyi-tenant</module>
         <module>ruoyi-metadata</module>
         <module>ruoyi-formdata</module>
     </modules>

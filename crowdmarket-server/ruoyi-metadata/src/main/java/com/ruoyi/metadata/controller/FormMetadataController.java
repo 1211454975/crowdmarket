@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ruoyi.metadata.domain.FormMetadata;
-import com.ruoyi.metadata.service.FormMetadataService;
+import com.ruoyi.metadata.service.IFormMetadataService;
 
 /**
  * 表单元数据Controller
@@ -30,7 +30,7 @@ import com.ruoyi.metadata.service.FormMetadataService;
 @RequestMapping("/metadata/form")
 public class FormMetadataController extends BaseController {
     @Autowired
-    private FormMetadataService formMetadataService;
+    private IFormMetadataService IFormMetadataService;
 
     /**
      * 查询表单元数据列表
@@ -39,7 +39,7 @@ public class FormMetadataController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(FormMetadata formMetadata) {
         startPage();
-        List<FormMetadata> list = formMetadataService.selectFormMetadataList(formMetadata);
+        List<FormMetadata> list = IFormMetadataService.selectFormMetadataList(formMetadata);
         return getDataTable(list);
     }
 
@@ -49,7 +49,7 @@ public class FormMetadataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:form:query')")
     @GetMapping(value = "/{metadataId}")
     public AjaxResult getInfo(@PathVariable("metadataId") String metadataId) {
-        return AjaxResult.success(formMetadataService.selectFormMetadataByMetadataId(metadataId));
+        return AjaxResult.success(IFormMetadataService.selectFormMetadataByMetadataId(metadataId));
     }
 
     /**
@@ -59,7 +59,7 @@ public class FormMetadataController extends BaseController {
     @Log(title = "表单元数据", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody FormMetadata formMetadata) {
-        return toAjax(formMetadataService.insertFormMetadata(formMetadata));
+        return toAjax(IFormMetadataService.insertFormMetadata(formMetadata));
     }
 
     /**
@@ -69,7 +69,7 @@ public class FormMetadataController extends BaseController {
     @Log(title = "表单元数据", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody FormMetadata formMetadata) {
-        return toAjax(formMetadataService.updateFormMetadata(formMetadata));
+        return toAjax(IFormMetadataService.updateFormMetadata(formMetadata));
     }
 
     /**
@@ -79,7 +79,7 @@ public class FormMetadataController extends BaseController {
     @Log(title = "表单元数据", businessType = BusinessType.DELETE)
     @DeleteMapping("/{metadataIds}")
     public AjaxResult remove(@PathVariable String[] metadataIds) {
-        return toAjax(formMetadataService.deleteFormMetadataByMetadataIds(metadataIds));
+        return toAjax(IFormMetadataService.deleteFormMetadataByMetadataIds(metadataIds));
     }
 
     /**
@@ -89,7 +89,7 @@ public class FormMetadataController extends BaseController {
     @Log(title = "表单元数据", businessType = BusinessType.UPDATE)
     @PutMapping("/publish/{metadataId}")
     public AjaxResult publish(@PathVariable("metadataId") String metadataId) {
-        return toAjax(formMetadataService.publishFormMetadata(metadataId));
+        return toAjax(IFormMetadataService.publishFormMetadata(metadataId));
     }
 
     /**
@@ -99,6 +99,6 @@ public class FormMetadataController extends BaseController {
     @Log(title = "表单元数据", businessType = BusinessType.UPDATE)
     @PutMapping("/disable/{metadataId}")
     public AjaxResult disable(@PathVariable("metadataId") String metadataId) {
-        return toAjax(formMetadataService.disableFormMetadata(metadataId));
+        return toAjax(IFormMetadataService.disableFormMetadata(metadataId));
     }
 }

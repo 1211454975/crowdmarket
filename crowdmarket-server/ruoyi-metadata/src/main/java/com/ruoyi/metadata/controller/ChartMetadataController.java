@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ruoyi.metadata.domain.ChartConfig;
 import com.ruoyi.metadata.domain.ChartMetadata;
-import com.ruoyi.metadata.service.ChartMetadataService;
+import com.ruoyi.metadata.service.IChartMetadataService;
 
 /**
  * 图表元数据Controller
@@ -32,7 +32,7 @@ import com.ruoyi.metadata.service.ChartMetadataService;
 @RequestMapping("/metadata/chart")
 public class ChartMetadataController extends BaseController {
     @Autowired
-    private ChartMetadataService chartMetadataService;
+    private IChartMetadataService IChartMetadataService;
 
     /**
      * 查询图表元数据列表
@@ -41,7 +41,7 @@ public class ChartMetadataController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(ChartMetadata chartMetadata) {
         startPage();
-        List<ChartMetadata> list = chartMetadataService.selectChartMetadataList(chartMetadata);
+        List<ChartMetadata> list = IChartMetadataService.selectChartMetadataList(chartMetadata);
         return getDataTable(list);
     }
 
@@ -51,7 +51,7 @@ public class ChartMetadataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:chart:list')")
     @GetMapping("/listByMetadataId/{metadataId}")
     public AjaxResult listByMetadataId(@PathVariable("metadataId") String metadataId) {
-        List<ChartMetadata> list = chartMetadataService.selectChartMetadataByMetadataId(metadataId);
+        List<ChartMetadata> list = IChartMetadataService.selectChartMetadataByMetadataId(metadataId);
         return AjaxResult.success(list);
     }
 
@@ -61,7 +61,7 @@ public class ChartMetadataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:chart:query')")
     @GetMapping(value = "/{chartId}")
     public AjaxResult getInfo(@PathVariable("chartId") String chartId) {
-        return AjaxResult.success(chartMetadataService.selectChartMetadataByChartId(chartId));
+        return AjaxResult.success(IChartMetadataService.selectChartMetadataByChartId(chartId));
     }
 
     /**
@@ -70,7 +70,7 @@ public class ChartMetadataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:chart:query')")
     @GetMapping(value = "/detail/{chartId}")
     public AjaxResult getDetail(@PathVariable("chartId") String chartId) {
-        return AjaxResult.success(chartMetadataService.getChartDetail(chartId));
+        return AjaxResult.success(IChartMetadataService.getChartDetail(chartId));
     }
 
     /**
@@ -80,7 +80,7 @@ public class ChartMetadataController extends BaseController {
     @Log(title = "图表元数据", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ChartMetadata chartMetadata) {
-        return toAjax(chartMetadataService.insertChartMetadata(chartMetadata));
+        return toAjax(IChartMetadataService.insertChartMetadata(chartMetadata));
     }
 
     /**
@@ -90,7 +90,7 @@ public class ChartMetadataController extends BaseController {
     @Log(title = "图表元数据", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ChartMetadata chartMetadata) {
-        return toAjax(chartMetadataService.updateChartMetadata(chartMetadata));
+        return toAjax(IChartMetadataService.updateChartMetadata(chartMetadata));
     }
 
     /**
@@ -100,7 +100,7 @@ public class ChartMetadataController extends BaseController {
     @Log(title = "图表元数据", businessType = BusinessType.DELETE)
     @DeleteMapping("/{chartIds}")
     public AjaxResult remove(@PathVariable String[] chartIds) {
-        return toAjax(chartMetadataService.deleteChartMetadataByChartIds(chartIds));
+        return toAjax(IChartMetadataService.deleteChartMetadataByChartIds(chartIds));
     }
 
     /**
@@ -110,7 +110,7 @@ public class ChartMetadataController extends BaseController {
     @Log(title = "图表元数据", businessType = BusinessType.UPDATE)
     @PutMapping("/publish/{chartId}")
     public AjaxResult publish(@PathVariable("chartId") String chartId) {
-        return toAjax(chartMetadataService.publishChart(chartId));
+        return toAjax(IChartMetadataService.publishChart(chartId));
     }
 
     /**
@@ -120,7 +120,7 @@ public class ChartMetadataController extends BaseController {
     @Log(title = "图表元数据", businessType = BusinessType.UPDATE)
     @PutMapping("/disable/{chartId}")
     public AjaxResult disable(@PathVariable("chartId") String chartId) {
-        return toAjax(chartMetadataService.disableChart(chartId));
+        return toAjax(IChartMetadataService.disableChart(chartId));
     }
 
     /**
@@ -130,7 +130,7 @@ public class ChartMetadataController extends BaseController {
     @Log(title = "图表配置", businessType = BusinessType.UPDATE)
     @PostMapping("/config/{chartId}")
     public AjaxResult saveConfig(@PathVariable("chartId") String chartId, @RequestBody ChartConfig chartConfig) {
-        return toAjax(chartMetadataService.saveChartConfig(chartId, chartConfig));
+        return toAjax(IChartMetadataService.saveChartConfig(chartId, chartConfig));
     }
 
     /**
@@ -139,6 +139,6 @@ public class ChartMetadataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('metadata:chart:query')")
     @PostMapping("/data/{chartId}")
     public AjaxResult getData(@PathVariable("chartId") String chartId, @RequestBody(required = false) Map<String, Object> params) {
-        return AjaxResult.success(chartMetadataService.getChartData(chartId, params));
+        return AjaxResult.success(IChartMetadataService.getChartData(chartId, params));
     }
 }

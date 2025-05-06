@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ruoyi.metadata.domain.TenantDatabase;
-import com.ruoyi.metadata.service.TenantDatabaseService;
+import com.ruoyi.metadata.service.ITenantDatabaseService;
 
 /**
  * 租户数据库配置Controller
@@ -30,7 +30,7 @@ import com.ruoyi.metadata.service.TenantDatabaseService;
 @RequestMapping("/metadata/tenant/database")
 public class TenantDatabaseController extends BaseController {
     @Autowired
-    private TenantDatabaseService tenantDatabaseService;
+    private ITenantDatabaseService tenantDatabaseService;
 
     /**
      * 查询租户数据库配置列表

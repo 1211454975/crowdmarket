@@ -28,8 +28,6 @@ import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
 import com.ruoyi.framework.config.properties.DruidProperties;
 import com.ruoyi.framework.datasource.DynamicDataSource;
 
-import com.ruoyi.framework.service.ITenantDatabaseService;
-
 /**
  * druid 配置多数据源
  * 
@@ -66,7 +64,7 @@ public class DruidConfig
 
         // 租户数据源扩展
         // Initialize with tenant data sources that are already configured
-        initTenantDataSources(targetDataSources);
+//        initTenantDataSources(targetDataSources);
 
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
@@ -76,59 +74,59 @@ public class DruidConfig
      * 租户数据源扩展
      * Initialize tenant data sources from the database
      */
-    private void initTenantDataSources(Map<Object, Object> targetDataSources) {
-        try {
-            // Get tenant database service using SpringUtils to avoid circular dependency
-            ITenantDatabaseService tenantDatabaseService = SpringUtils.getBean(ITenantDatabaseService.class);
-            if (tenantDatabaseService != null) {
-                // Get all active tenant databases
-                TenantDatabase query = new TenantDatabase();
-                query.setStatus(1); // Only active databases
-                List<TenantDatabase> tenantDatabases = tenantDatabaseService.selectTenantDatabaseList(query);
-
-                // Add each tenant database to the target data sources
-                for (TenantDatabase tenantDb : tenantDatabases) {
-                    try {
-                        DataSource tenantDataSource = createTenantDataSource(tenantDb);
-                        targetDataSources.put(tenantDb.getTenantId(), tenantDataSource);
-                    } catch (Exception e) {
-                        log.error("Failed to initialize tenant data source for tenant: " + tenantDb.getTenantId(), e);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("Failed to initialize tenant data sources", e);
-        }
-    }
+//    private void initTenantDataSources(Map<Object, Object> targetDataSources) {
+//        try {
+//            // Get tenant database service using SpringUtils to avoid circular dependency
+//            ITenantDatabaseService tenantDatabaseService = SpringUtils.getBean(ITenantDatabaseService.class);
+//            if (tenantDatabaseService != null) {
+//                // Get all active tenant databases
+//                TenantDatabase query = new TenantDatabase();
+//                query.setStatus(1); // Only active databases
+//                List<TenantDatabase> tenantDatabases = tenantDatabaseService.selectTenantDatabaseList(query);
+//
+//                // Add each tenant database to the target data sources
+//                for (TenantDatabase tenantDb : tenantDatabases) {
+//                    try {
+//                        DataSource tenantDataSource = createTenantDataSource(tenantDb);
+//                        targetDataSources.put(tenantDb.getTenantId(), tenantDataSource);
+//                    } catch (Exception e) {
+//                        log.error("Failed to initialize tenant data source for tenant: " + tenantDb.getTenantId(), e);
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            log.error("Failed to initialize tenant data sources", e);
+//        }
+//    }
 
     /**
      * Create a data source for a tenant
      */
-    private DataSource createTenantDataSource(TenantDatabase tenantDb) {
-        DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://" + tenantDb.getDbHost() + ":" + tenantDb.getDbPort() + "/" + tenantDb.getDbName());
-        dataSource.setUsername(tenantDb.getDbUsername());
-        dataSource.setPassword(decryptPassword(tenantDb.getDbPassword()));
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-
-        // Apply the same Druid properties as the master data source
-        DruidProperties druidProperties = SpringUtils.getBean(DruidProperties.class);
-        return druidProperties.dataSource(dataSource);
-    }
+//    private DataSource createTenantDataSource(TenantDatabase tenantDb) {
+//        DruidDataSource dataSource = new DruidDataSource();
+//        dataSource.setUrl("jdbc:mysql://" + tenantDb.getDbHost() + ":" + tenantDb.getDbPort() + "/" + tenantDb.getDbName());
+//        dataSource.setUsername(tenantDb.getDbUsername());
+//        dataSource.setPassword(decryptPassword(tenantDb.getDbPassword()));
+//        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//
+//        // Apply the same Druid properties as the master data source
+//        DruidProperties druidProperties = SpringUtils.getBean(DruidProperties.class);
+//        return druidProperties.dataSource(dataSource);
+//    }
 
 
     /**
      * Decrypt the password
      */
-    private String decryptPassword(String encryptedPassword) {
-        try {
-            // Implement password decryption logic
-            return encryptedPassword; // Placeholder
-        } catch (Exception e) {
-            log.error("Failed to decrypt password", e);
-            return encryptedPassword;
-        }
-    }
+//    private String decryptPassword(String encryptedPassword) {
+//        try {
+//            // Implement password decryption logic
+//            return encryptedPassword; // Placeholder
+//        } catch (Exception e) {
+//            log.error("Failed to decrypt password", e);
+//            return encryptedPassword;
+//        }
+//    }
 
 
     /**
